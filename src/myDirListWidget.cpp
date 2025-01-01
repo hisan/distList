@@ -127,7 +127,7 @@ void MyDirListWidget::openDir(QListWidgetItem* clickedItem)
     int curPathNum = (int)dirWithFrence_.size();
     const auto clickedPath = clickedItem->text().toStdString();
 
-    for (int i = 0;i < curPathNum;++i)
+    for (int i = 0; i < curPathNum; ++i)
     {
         auto& [path, item, frence] = dirWithFrence_[i];
         if (item == clickedItem)
@@ -135,18 +135,31 @@ void MyDirListWidget::openDir(QListWidgetItem* clickedItem)
             currentItem_ = item;
             ++frence;
 
-            std::string cmd;
+            QString program;
+
             #ifdef Q_OS_LINUX
-            cmd = "xdg-open \"" + path + "\"";
+            program = "xdg-open";
             #elif defined(Q_OS_WIND)
-            cmd = "explorer \"" + QDir::toNativeSeparators(path) + "\"";
+            program = "explorer";
             #else
                 return;
             #endif
 
+            std::cout << "cmd: " << program.toStdString() << " " << path <<"\n";
+
             QProcess *exePro = new QProcess(this);
-            exePro->start(cmd.c_str());
+            connect(exePro, &QProcess::errorOccurred, this, [exePro](QProcess::ProcessError error) {
+                std::cerr << "QProcess error: " << error << ", state: " << exePro->state() << "\n";
+            });
+
             connect(exePro, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), exePro, &QProcess::deleteLater);
+
+            exePro->start("xdg-open", {path.string().c_str()});
+
+            if (!exePro->waitForStarted()) {
+                std::cerr << "Failed to start process\n";
+                delete exePro;
+            }
             break;
         }
     }

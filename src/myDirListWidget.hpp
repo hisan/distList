@@ -41,7 +41,7 @@ private:
     std::thread tid_;
     std::string dirListFile_;
     const std::string fileName_ = "dirList.txt";
-    std::vector<std::tuple<std::string, QListWidgetItem*, int>> dirWithFrence_;
+    std::vector<std::tuple<std::filesystem::path, QListWidgetItem*, int>> dirWithFrence_;
 };
 
 #endif//__MY_DIR_LIST_WIDGET_HPP__

@@ -7,10 +7,13 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_PREFIX_PATH $ENV{Qt6_DIR})
 set(CMAKE_BUILD_TYPE Debug)
 
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+set(ENV{Qt6_DIR} /home/zyb/working/Ddisk/Dev/Qt/6.7.0/gcc_64)
+set(CMAKE_PREFIX_PATH $ENV{Qt6_DIR}/lib/cmake)
+message("prefix path: ${CMAKE_PREFIX_PATH}")
+
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 set(RESOURCES resource.qrc)
 
@@ -28,6 +31,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(${PROJECT_NAME} ${SOURCES} )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE Qt5::Core Qt5::Widgets sqlite3
+    PRIVATE Qt6::Core Qt6::Widgets sqlite3
     pthread
 )
